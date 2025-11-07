@@ -212,17 +212,17 @@ We welcome contributors for smart contract optimization, UI/UX enhancement, and 
 
 ## 📩 Contact
 
-**Project Lead:** [Maxwell Ephraim H. (MGTechs)](mailto:support@mgtechs.com.ng)  
+**Project Lead:** [Maxwell Ephraim H. (MGTechs)](mailto:mgtechs09@gmail.com)  
 **GitHub:** [https://github.com/Maxephraim09](https://github.com/Maxephraim09)  
 **Website:** [https://mgtechs.com.ng](https://mgtechs.com.ng)
 
-**Project Dev:** [Ubong Sunday U. (Certsoft)](mailto:support@certsoft.netify.com)  
-**GitHub:** [https://github.com/Certsoft](https://github.com/Certsoft)  
-**Website:** [https://certsoft.netify.com](https://certsoft.netify.com)
+**Project Dev:** [Ubong Sunday U. (Certsoftt)](mailto:ukpeubong8573@gmail.com)  
+**GitHub:** [https://github.com/certsoftt](https://github.com/certsoftt)  
+**Website:** [https://certsoftt.netlify.app](https://certsoftt.netlify.app)
 
-**Project Dev:** [Caleb Ezekiel H. (Certsoft)](mailto:support@kiztech.netify.com)  
-**GitHub:** [https://github.com/kiztech](https://github.com/kiztech)  
-**Website:** [https://kiztech.netify.com](https://kiztech.netify.com)
+**Project Dev:** [Caleb Ezekiel H. (KizTech)](mailto:calebezekielhatbwan@gmail.com)  
+**GitHub:** [https://github.com/Likizy](https://github.com/Likizy)  
+**Website:** [https://github.com/Likizy](https://github.com/Likizy)
 
 
 ### 🏁 License
