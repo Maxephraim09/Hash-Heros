@@ -4,7 +4,7 @@ import { GameProvider, GameContext } from './context/GameState';
 import { registerServiceWorker, onOnlineStatusChange } from './utils/serviceWorkerManager';
 import { offlineStorage } from './utils/offlineStorage';
 import { prefetchCommonResources } from './utils/imageOptimization';
-import { performanceMonitor } from './utils/performanceMonitoring';
+import * as performanceMonitor from './utils/performanceMonitor';
 import Preloader from './components/Preloader';
 import WalletConnect from './components/WalletConnect';
 import TokenDashboard from './components/TokenDashboard';
@@ -38,8 +38,20 @@ function AppContent(){
     // Prefetch common resources when browser is idle
     prefetchCommonResources();
 
-    // Get Core Web Vitals
-    performanceMonitor.getCoreWebVitals();
+    // Measure page load performance
+    performanceMonitor.measurePageLoad();
+
+    // Get Core Web Vitals (LCP, FID, CLS)
+    performanceMonitor.measureWebVitals((vitals) => {
+      console.log('Core Web Vitals:', vitals);
+      // You can send this to analytics service here
+    });
+
+    // Assess overall Web Vitals health
+    const assessment = performanceMonitor.assessWebVitals();
+    if (assessment.status !== 'good') {
+      console.warn(`⚠️ Web Vitals Assessment: ${assessment.status}`, assessment.details);
+    }
 
     // Monitor online/offline status
     const unsubscribe = onOnlineStatusChange(setIsOnline);
@@ -49,12 +61,20 @@ function AppContent(){
   useEffect(() => {
     (async () => {
       try {
+        // Measure web3 initialization time
+        const web3StartTime = performance.now();
+        
         const web3 = await initWeb3();
         const accounts = await web3.eth.getAccounts();
+        
+        const web3InitTime = performance.now() - web3StartTime;
+        performanceMonitor.measureApiCall('web3_initialization', web3InitTime);
+        
         if (accounts.length > 0) {
           setAccount(accounts[0]);
           dispatch({ type: 'SET_USER_ADDRESS', payload: accounts[0] });
         }
+        
         const cs = await loadContracts();
         setContracts(cs);
         setIsBlockDAG(cs?.isBlockDAG || false);
@@ -62,6 +82,11 @@ function AppContent(){
         console.warn('Web3 init failed', e);
       } finally {
         setIsLoading(false);
+        // Log final metrics when ready
+        setTimeout(() => {
+          const allMetrics = performanceMonitor.getMetrics();
+          console.log('📊 Performance Metrics:', allMetrics);
+        }, 1000);
       }
     })();
   }, [dispatch]);

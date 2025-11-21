@@ -8,12 +8,18 @@ let web3;
 let currentAccount = null;
 let isBlockDAG = false;
 
+// Environment variables (with fallback defaults)
+const RPC_URL = process.env.REACT_APP_RPC_URL || 'https://rpc.awakening.bdagscan.com';
+const CHAIN_ID = process.env.REACT_APP_CHAIN_ID || '1043';
+const EXPLORER_URL = process.env.REACT_APP_EXPLORER_URL || 'https://awakening.bdagscan.com';
+const CHAIN_NAME = process.env.REACT_APP_CHAIN_NAME || 'BlockDAG Awakening Testnet';
+
 // BlockDAG Awakening Testnet Configuration
 const BLOCKDAG_CONFIG = {
   chainId: '0x40b', // 1043 in hex
-  chainName: 'BlockDAG Awakening Testnet',
-  rpcUrls: ['https://rpc.awakening.bdagscan.com'],
-  blockExplorerUrls: ['https://awakening.bdagscan.com'],
+  chainName: CHAIN_NAME,
+  rpcUrls: [RPC_URL],
+  blockExplorerUrls: [EXPLORER_URL],
   nativeCurrency: { name: 'BDAG', symbol: 'BDAG', decimals: 18 }
 };
 

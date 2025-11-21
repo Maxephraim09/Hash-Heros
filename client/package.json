@@ -12,7 +12,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "generate-abis": "node scripts/generateABIs.js",
+    "build:all": "npm run generate-abis && npm run build"
   },
   "browserslist": {
     "production": [

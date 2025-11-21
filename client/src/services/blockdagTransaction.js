@@ -1,7 +1,9 @@
 import { SimpleCache } from '../utils/optimizations';
+import * as transactionStorage from './transactionStorage';
 
-const BLOCKDAG_RPC = 'https://rpc.awakening.bdagscan.com';
-const BLOCKDAG_EXPLORER = 'https://awakening.bdagscan.com';
+// Environment variables with fallback defaults
+const BLOCKDAG_RPC = process.env.REACT_APP_RPC_URL || 'https://rpc.awakening.bdagscan.com';
+const BLOCKDAG_EXPLORER = process.env.REACT_APP_EXPLORER_URL || 'https://awakening.bdagscan.com';
 const txCache = new SimpleCache(5 * 60 * 1000); // 5 min cache
 
 /**
@@ -58,11 +60,34 @@ export async function transferNFTInstant(web3, from, to, nftId, contractAddress)
     // Cache the transaction
     txCache.set(`tx:${txHash}`, tx);
 
+    // Persist transaction to localStorage
+    try {
+      transactionStorage.saveTransaction({
+        hash: txHash,
+        from: from,
+        to: to,
+        value: nftId,
+        type: 'nft_transfer',
+        contractAddress: contractAddress,
+        timestamp: tx.timestamp,
+        status: 'pending'
+      });
+    } catch (storageError) {
+      console.warn('Failed to save transaction to storage:', storageError);
+    }
+
     // Simulate BlockDAG instant confirmation (real confirmation happens in ~1-2 seconds on BlockDAG)
     setTimeout(() => {
       tx.status = 'confirmed';
       tx.confirmations = 1;
       tx.dagTimestamp = new Date().toISOString();
+      
+      // Update persisted transaction status
+      try {
+        transactionStorage.updateTransactionStatus(txHash, 'confirmed');
+      } catch (e) {
+        console.warn('Failed to update transaction status:', e);
+      }
     }, 1500);
 
     return tx;
@@ -85,11 +110,35 @@ export async function mintDynamicNFT(web3, to, contractAddress, metadata = {}) {
 
     txCache.set(`tx:${txHash}`, tx);
 
+    // Persist transaction to localStorage
+    try {
+      transactionStorage.saveTransaction({
+        hash: txHash,
+        from: 'System',
+        to: to,
+        value: 1,
+        type: 'nft_mint',
+        contractAddress: contractAddress,
+        metadata: metadata,
+        timestamp: tx.timestamp,
+        status: 'pending'
+      });
+    } catch (storageError) {
+      console.warn('Failed to save transaction to storage:', storageError);
+    }
+
     // Instant confirmation simulation
     setTimeout(() => {
       tx.status = 'confirmed';
       tx.confirmations = 1;
       tx.dagTimestamp = new Date().toISOString();
+      
+      // Update persisted transaction status
+      try {
+        transactionStorage.updateTransactionStatus(txHash, 'confirmed');
+      } catch (e) {
+        console.warn('Failed to update transaction status:', e);
+      }
     }, 1000);
 
     return tx;
@@ -214,31 +263,30 @@ export async function getTransactionStatus(txHash) {
 }
 
 /**
- * Get all transactions for a user from cache
+ * Get all transactions for a user from persistent storage
  */
 export async function getUserTransactions(userAddress) {
   try {
-    const allTxs = [];
-    const cacheKeys = Object.keys(localStorage || {});
+    // Use transactionStorage for persistent retrieval
+    const transactions = transactionStorage.getUserTransactions(userAddress);
     
+    // Also check cache for recent pending transactions
+    const cacheKeys = Object.keys(txCache.cache || {});
     cacheKeys.forEach(key => {
       if (key.startsWith('tx:')) {
-        const txStr = localStorage.getItem(key);
-        if (txStr) {
-          try {
-            const tx = JSON.parse(txStr);
-            if (tx.from === userAddress || tx.to === userAddress) {
-              allTxs.push(tx);
-            }
-          } catch (e) {
-            console.warn('Could not parse transaction:', e);
+        const tx = txCache.get(key);
+        if (tx && (tx.from === userAddress || tx.to === userAddress)) {
+          // Only add if not already in persisted transactions
+          const exists = transactions.some(t => t.hash === tx.hash);
+          if (!exists) {
+            transactions.push(tx.toJSON());
           }
         }
       }
     });
 
     // Sort by timestamp descending
-    return allTxs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    return transactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   } catch (error) {
     console.warn('Could not get user transactions:', error);
     return [];

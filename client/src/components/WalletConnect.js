@@ -87,13 +87,10 @@ const WalletConnect = ({ onAccountChange }) => {
     }
   }, [onAccountChange, fetchBalance]);
 
-  const handleDisconnect = useCallback(() => {
-    setAccount(null);
-    setBalance('0');
-    setIsBlockDAG(false);
-    setConnectionStatus('disconnected');
-    onAccountChange && onAccountChange(null);
-  }, [onAccountChange]);
+  const handleGetTestBDAG = useCallback(() => {
+    const faucetUrl = process.env.REACT_APP_FAUCET_URL || 'https://awakening.bdagscan.com/faucet';
+    window.open(faucetUrl, '_blank', 'noopener,noreferrer');
+  }, []);
 
   return (
     <div className="wallet-connect-card">
@@ -134,6 +131,15 @@ const WalletConnect = ({ onAccountChange }) => {
           >
             🔌 Disconnect
           </button>
+          {isBlockDAG && account && (
+            <button 
+              onClick={handleGetTestBDAG}
+              className="wallet-btn faucet-btn"
+              title="Get test BDAG tokens from faucet"
+            >
+              💧 Get Test BDAG
+            </button>
+          )}
         </div>
       )}
 
@@ -250,6 +256,17 @@ const WalletConnect = ({ onAccountChange }) => {
         .disconnect-btn:hover {
           background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
           box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .faucet-btn {
+          border-color: #00ff88;
+          color: #00ff88;
+          background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+        }
+
+        .faucet-btn:hover {
+          background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+          box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
         }
 
         .wallet-error {

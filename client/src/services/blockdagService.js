@@ -1,6 +1,7 @@
 import { debounce, SimpleCache } from '../utils/optimizations';
 
-const BASE = 'http://localhost:4001';
+// Environment variable with fallback default
+const BASE = process.env.REACT_APP_API_URL || 'http://localhost:4001';
 const apiCache = new SimpleCache(10 * 60 * 1000); // 10 minutes for BlockDAG data
 
 export async function instantTransfer(from, to, tokenId) {
