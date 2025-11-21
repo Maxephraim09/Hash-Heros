@@ -6,15 +6,25 @@ export default function InstantTransfer({ account }){
   const [balance, setBalance] = useState(0);
 
   async function send(){
-    setStatus('Sending...');
-    const resp = await instantTransfer(account || '0xSender', '0xReceiver', 1);
-    setStatus('Confirmed: ' + resp.receipt.id);
+    try {
+      setStatus('Sending...');
+      const resp = await instantTransfer(account || '0xSender', '0xReceiver', 1);
+      setStatus('Confirmed: ' + resp.receipt.id);
+    } catch(error) {
+      setStatus('Error: BlockDAG API unavailable. ' + error.message);
+      console.warn('BlockDAG transfer failed:', error.message);
+    }
   }
 
   async function addMicro(){
-    await micropay(account || '0xSender', 100);
-    const r = await getMicro(account || '0xSender');
-    setBalance(r.balance);
+    try {
+      await micropay(account || '0xSender', 100);
+      const r = await getMicro(account || '0xSender');
+      setBalance(r.balance);
+    } catch(error) {
+      setStatus('Error: Could not add micropayment. ' + error.message);
+      console.warn('Micropay failed:', error.message);
+    }
   }
 
   return (
