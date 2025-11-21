@@ -1,11 +1,13 @@
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState, Suspense, useContext } from 'react';
 import { initWeb3, loadContracts } from './services/web3Service';
-import { GameProvider } from './context/GameState';
+import { GameProvider, GameContext } from './context/GameState';
 import { registerServiceWorker, onOnlineStatusChange } from './utils/serviceWorkerManager';
 import { offlineStorage } from './utils/offlineStorage';
 import { prefetchCommonResources } from './utils/imageOptimization';
 import { performanceMonitor } from './utils/performanceMonitoring';
 import Preloader from './components/Preloader';
+import WalletConnect from './components/WalletConnect';
+import TokenDashboard from './components/TokenDashboard';
 
 // Code splitting: Load components lazily on demand
 const TapToEarn = React.lazy(() => import('./components/TapToEarn'));
@@ -18,11 +20,13 @@ const Missions = React.lazy(() => import('./components/Missions'));
 
 import './styles.css';
 
-function App(){
+function AppContent(){
+  const { state, dispatch } = useContext(GameContext);
   const [account, setAccount] = useState(null);
   const [contracts, setContracts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isBlockDAG, setIsBlockDAG] = useState(false);
 
   useEffect(() => {
     // Register Service Worker for offline support and caching
@@ -47,31 +51,63 @@ function App(){
       try {
         const web3 = await initWeb3();
         const accounts = await web3.eth.getAccounts();
-        setAccount(accounts[0]);
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+          dispatch({ type: 'SET_USER_ADDRESS', payload: accounts[0] });
+        }
         const cs = await loadContracts();
         setContracts(cs);
+        setIsBlockDAG(cs?.isBlockDAG || false);
       } catch(e) {
         console.warn('Web3 init failed', e);
       } finally {
         setIsLoading(false);
       }
     })();
-  }, []);
+  }, [dispatch]);
+
+  const handleAccountChange = (newAccount) => {
+    setAccount(newAccount);
+    if (newAccount) {
+      dispatch({ type: 'SET_USER_ADDRESS', payload: newAccount });
+    }
+  };
 
   if (isLoading) {
     return <Preloader />;
   }
 
   return (
-    <GameProvider>
-      <div className="app sci-bg">
-        <header className="sci-header">
-          <h1>Hashing Heros — Dynamic NFT Network</h1>
-          <p style={{ wordBreak: 'break-all' }}>Account: {account}</p>
-          <p style={{ marginTop: '5px', wordBreak: 'break-all' }}>
-            Status: {isOnline ? '🟢 Online' : '🔴 Offline'}
+    <div className="app sci-bg">
+      <header className="sci-header">
+        <div className="header-top">
+          <h1>⛓️ Hashing Heros — BlockDAG Dynamic NFT Network</h1>
+          <p className="tagline">Instant. Scalable. Decentralized.</p>
+        </div>
+        <div className="header-status">
+          <p>
+            <span className={`status-badge ${isOnline ? 'online' : 'offline'}`}>
+              {isOnline ? '🟢 Online' : '🔴 Offline'}
+            </span>
+            {isBlockDAG && <span className="blockdag-badge">⚡ BlockDAG Awakening</span>}
           </p>
-        </header>
+        </div>
+      </header>
+
+      <div className="app-container">
+        {/* Wallet Connection Widget */}
+        <section className="wallet-section">
+          <WalletConnect account={account} onAccountChange={handleAccountChange} />
+        </section>
+
+        {/* Token Dashboard */}
+        {account && (
+          <section className="token-section">
+            <TokenDashboard account={account} />
+          </section>
+        )}
+
+        {/* Main Game Grid */}
         <main className="grid">
           <Suspense fallback={<div className="card sci"><p>Loading...</p></div>}>
             <TapToEarn />
@@ -96,6 +132,14 @@ function App(){
           </Suspense>
         </main>
       </div>
+    </div>
+  );
+}
+
+function App(){
+  return (
+    <GameProvider>
+      <AppContent />
     </GameProvider>
   );
 }
