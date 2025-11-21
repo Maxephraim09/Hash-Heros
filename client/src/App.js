@@ -40,7 +40,7 @@ function App(){
     <GameProvider>
       <div className="app sci-bg">
         <header className="sci-header">
-          <h1>Hashing Heros — BlockDAG Demo (Sci-Fi)</h1>
+          <h1>Hashing Heros — Dynamic NFT Network</h1>
           <p>Account: {account}</p>
         </header>
         <main className="grid">
