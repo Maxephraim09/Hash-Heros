@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useMemo } from 'react';
 
 const initial = { xp:0, level:1, energy:50, reputation:0, badges:[] };
 
@@ -21,5 +21,9 @@ export const GameContext = createContext();
 
 export function GameProvider({ children }){
   const [state, dispatch] = useReducer(reducer, initial);
-  return <GameContext.Provider value={{ state, dispatch }}>{children}</GameContext.Provider>;
+  
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
+  
+  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }

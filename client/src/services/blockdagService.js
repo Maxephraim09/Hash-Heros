@@ -1,14 +1,36 @@
-import axios from 'axios';
+import { debounce, SimpleCache } from '../utils/optimizations';
+
 const BASE = 'http://localhost:4001';
-export async function instantTransfer(from,to,tokenId){
-  const r = await axios.post(`${BASE}/transfer`, { from, to, tokenId });
-  return r.data;
+const apiCache = new SimpleCache(10 * 60 * 1000); // 10 minutes for BlockDAG data
+
+export async function instantTransfer(from, to, tokenId) {
+  const response = await fetch(`${BASE}/transfer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from, to, tokenId })
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
 }
-export async function micropay(address, amount){
-  const r = await axios.post(`${BASE}/micropay`, { address, amount });
-  return r.data;
+
+export async function micropay(address, amount) {
+  const response = await fetch(`${BASE}/micropay`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ address, amount })
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
 }
-export async function getMicro(address){
-  const r = await axios.get(`${BASE}/micropay/${address}`);
-  return r.data;
+
+export async function getMicro(address) {
+  const cacheKey = `micropay:${address}`;
+  const cached = apiCache.get(cacheKey);
+  if (cached) return cached;
+  
+  const response = await fetch(`${BASE}/micropay/${address}`);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const data = await response.json();
+  apiCache.set(cacheKey, data);
+  return data;
 }

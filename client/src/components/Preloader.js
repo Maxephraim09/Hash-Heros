@@ -1,14 +1,14 @@
 import React from 'react';
 import '../styles/preloader.css';
 
-export default function Preloader() {
+const Preloader = () => {
   return (
     <div className="preloader-container">
       <div className="preloader-content">
         {/* Rotating Cube Circle */}
         <div className="cube-circle">
           <div className="cube-wrapper">
-            <img src="/images/cube.webp" alt="Hash Heros Cube" className="rotating-cube" />
+            <img src="/images/cube.webp" alt="Hash Heros Cube" className="rotating-cube" loading="lazy" decoding="async" />
           </div>
         </div>
 
@@ -29,8 +29,10 @@ export default function Preloader() {
         </div>
 
         {/* Loading Text */}
-        <p className="loading-text">Loading Game...</p>
+        <p className="loading-text">Loading Dynamic NFT...</p>
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(Preloader);

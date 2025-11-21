@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { instantTransfer, micropay, getMicro } from '../services/blockdagService';
 
-export default function InstantTransfer({ account }){
+const InstantTransfer = ({ account }) => {
   const [status, setStatus] = useState('');
   const [balance, setBalance] = useState(0);
 
-  async function send(){
+  const send = useCallback(async () => {
     try {
       setStatus('Sending...');
       const resp = await instantTransfer(account || '0xSender', '0xReceiver', 1);
@@ -14,9 +14,9 @@ export default function InstantTransfer({ account }){
       setStatus('Error: BlockDAG API unavailable. ' + error.message);
       console.warn('BlockDAG transfer failed:', error.message);
     }
-  }
+  }, [account]);
 
-  async function addMicro(){
+  const addMicro = useCallback(async () => {
     try {
       await micropay(account || '0xSender', 100);
       const r = await getMicro(account || '0xSender');
@@ -25,7 +25,7 @@ export default function InstantTransfer({ account }){
       setStatus('Error: Could not add micropayment. ' + error.message);
       console.warn('Micropay failed:', error.message);
     }
-  }
+  }, [account]);
 
   return (
     <div className="card sci">
@@ -36,4 +36,6 @@ export default function InstantTransfer({ account }){
       <p>Micro balance: {balance}</p>
     </div>
   );
-}
+};
+
+export default React.memo(InstantTransfer);

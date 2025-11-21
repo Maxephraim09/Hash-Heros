@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { GameContext } from '../context/GameState';
 
-export default function ReputationBadge(){
+const ReputationBadge = () => {
   const { state } = useContext(GameContext);
   const rank = state.reputation >= 50 ? 'Legend' : state.reputation >=20 ? 'Gold' : state.reputation >=10 ? 'Silver' : 'Bronze';
   return (
@@ -10,4 +10,6 @@ export default function ReputationBadge(){
       <p>Score: {state.reputation} | Rank: {rank}</p>
     </div>
   );
-}
+};
+
+export default React.memo(ReputationBadge);

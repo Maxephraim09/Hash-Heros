@@ -112,14 +112,15 @@
   position: relative;
   display: flex;
   gap: 2px;
+  opacity: 0;
 }
 
 /* Individual Character Ripple Animation */
 .ripple-char {
   position: relative;
   display: inline-block;
-  animation: ripple-wave 1.8s ease-in-out infinite;
-  opacity: 0.8;
+  animation: char-visibility 3s ease-in-out infinite;
+  opacity: 0;
   transition: opacity 0.3s ease;
 }
 
@@ -134,26 +135,34 @@
 .ripple-char:nth-child(9) { animation-delay: 0.8s; }
 .ripple-char:nth-child(10) { animation-delay: 0.9s; }
 
-@keyframes ripple-wave {
+@keyframes char-visibility {
   0% {
+    opacity: 0;
     transform: translateY(0px) scaleY(1);
-    opacity: 0.8;
+  }
+  15% {
+    opacity: 0;
+    transform: translateY(0px) scaleY(1);
   }
   25% {
-    transform: translateY(-15px) scaleY(1.1);
     opacity: 1;
+    transform: translateY(-15px) scaleY(1.1);
   }
-  50% {
+  40% {
+    opacity: 1;
     transform: translateY(0px) scaleY(1);
-    opacity: 0.8;
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(10px) scaleY(0.9);
   }
   75% {
-    transform: translateY(10px) scaleY(0.9);
-    opacity: 0.6;
+    opacity: 0;
+    transform: translateY(0px) scaleY(1);
   }
   100% {
+    opacity: 0;
     transform: translateY(0px) scaleY(1);
-    opacity: 0.8;
   }
 }
 
