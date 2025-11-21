@@ -1,0 +1,9 @@
+body { margin:0; font-family: Inter, Arial, sans-serif; background:#071023; color:#bfe6ff; }
+.app { max-width:1100px; margin:20px auto; padding:18px; }
+.sci-header { text-align:center; padding:10px 0; border-bottom:1px solid rgba(120,200,255,0.08); }
+.grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; margin-top:18px; }
+.card { background: linear-gradient(180deg, rgba(9,18,32,0.9), rgba(5,10,18,0.6)); border-radius:12px; padding:16px; box-shadow: 0 8px 30px rgba(30,130,255,0.08); border: 1px solid rgba(30,130,255,0.08); }
+button { background: linear-gradient(90deg,#5df0ff,#6a66ff); color:#041028; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+.sci { border-left: 4px solid rgba(90,200,255,0.6); }
+img { border-radius:8px; box-shadow:0 8px 18px rgba(0,0,0,0.4); }
+pre { background: rgba(255,255,255,0.03); padding:8px; border-radius:8px; color:#d7f7ff; }
