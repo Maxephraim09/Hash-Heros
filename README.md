@@ -544,12 +544,43 @@ npm test -- --watch
 
 ## 🚀 BUILDING FOR PRODUCTION
 
+### When to Use `npm run generate-abis`
+
+The `npm run generate-abis` command is only needed in **specific scenarios**:
+
+#### ✅ You SHOULD Run It When:
+
+1. **You've just compiled smart contracts**
+   - After running `truffle compile`
+   - When contract ABIs have changed
+   - Need to update frontend with new contract interfaces
+
+2. **You're deploying contracts to BlockDAG**
+   - After `truffle migrate --network blockdag_awakening`
+   - To sync compiled ABIs to frontend
+
+3. **You modified smart contract code**
+   - Changed function signatures
+   - Added/removed events
+   - Updated contract logic
+
+4. **Building for production with real contracts**
+   - Deploying to production environment
+   - Using real contract addresses (not simulated)
+
+#### ❌ You DON'T Need It When:
+
+- ✅ Just testing/playing the game (use simulated contracts)
+- ✅ Running `npm start` for development (simulated works fine)
+- ✅ Using BlockDAG Awakening Testnet without deploying contracts
+- ✅ Contract files haven't changed
+
 ### Build Optimized Version
 
 ```bash
 cd client
 
-# Generate contract ABIs (if deploying contracts)
+# OPTIONAL: Generate contract ABIs (only if you compiled contracts)
 npm run generate-abis
 
 # Create optimized production build
@@ -561,6 +592,62 @@ npm run build:all
 # - Ready for deployment
 # - Size: ~200-300 KB (gzipped)
 ```
+
+### What `npm run generate-abis` Does
+
+When you run this command:
+
+```bash
+npm run generate-abis
+```
+
+It automatically:
+1. ✅ Reads compiled contracts from `build/contracts/` directory
+2. ✅ Extracts ABIs and contract metadata
+3. ✅ Copies JSON files to `client/src/contracts/`
+4. ✅ Updates contract addresses if known
+5. ✅ Logs success/error messages
+
+**Result:** Frontend can now interact with deployed contracts using the latest ABIs.
+
+### Complete Workflow (If Deploying Contracts)
+
+```bash
+# Step 1: Compile contracts
+truffle compile
+
+# Step 2: Deploy to BlockDAG
+export PRIVATE_KEY=your_key
+truffle migrate --network blockdag_awakening
+
+# Step 3: Generate ABIs for frontend
+cd client
+npm run generate-abis
+
+# Step 4: Update contract addresses in .env
+# Edit .env with addresses from deployment output
+nano .env
+
+# Step 5: Build and deploy
+npm run build:all
+# Upload build/ to Vercel/Netlify/Server
+```
+
+---
+
+## 📊 When to Run Each Command
+
+| Scenario | Run `generate-abis`? | Notes |
+|----------|----------------------|-------|
+| **Just playing/testing** | ❌ No | Simulated contracts work fine |
+| **Developing app** | ❌ No | Use `npm start` directly |
+| **After `truffle compile`** | ✅ Yes | Need to update frontend ABIs |
+| **After contract deployment** | ✅ Yes | Frontend needs new contract addresses |
+| **Contract code changed** | ✅ Yes | ABIs are different |
+| **Production build** | ✅ Yes (if using real contracts) | Include latest ABIs in build |
+| **Using only BlockDAG simulation** | ❌ No | Placeholder contracts are fine |
+
+---
 
 ### Analyze Bundle Size (Optional)
 
