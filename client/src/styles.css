@@ -1,9 +1,318 @@
-body { margin:0; font-family: Inter, Arial, sans-serif; background:#071023; color:#bfe6ff; }
-.app { max-width:1100px; margin:20px auto; padding:18px; }
-.sci-header { text-align:center; padding:10px 0; border-bottom:1px solid rgba(120,200,255,0.08); }
-.grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; margin-top:18px; }
-.card { background: linear-gradient(180deg, rgba(9,18,32,0.9), rgba(5,10,18,0.6)); border-radius:12px; padding:16px; box-shadow: 0 8px 30px rgba(30,130,255,0.08); border: 1px solid rgba(30,130,255,0.08); }
-button { background: linear-gradient(90deg,#5df0ff,#6a66ff); color:#041028; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
-.sci { border-left: 4px solid rgba(90,200,255,0.6); }
-img { border-radius:8px; box-shadow:0 8px 18px rgba(0,0,0,0.4); }
-pre { background: rgba(255,255,255,0.03); padding:8px; border-radius:8px; color:#d7f7ff; }
+/* ==================== MOBILE-FIRST RESPONSIVE DESIGN ==================== */
+
+/* Root Font Size for Responsive Typography */
+html {
+  font-size: 16px;
+}
+
+/* ==================== GLOBAL STYLES ==================== */
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  background: #071023;
+  color: #bfe6ff;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ==================== APP CONTAINER ==================== */
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px;
+  width: 100%;
+}
+
+/* ==================== HEADER ==================== */
+.sci-header {
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 1px solid rgba(120, 200, 255, 0.08);
+  margin-bottom: 16px;
+}
+
+.sci-header h1 {
+  font-size: 1.25rem;
+  margin: 8px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.sci-header p {
+  font-size: 0.875rem;
+  margin: 4px 0;
+  word-break: break-word;
+}
+
+/* ==================== GRID LAYOUT - MOBILE FIRST ==================== */
+/* MOBILE: 1 card per row (default) */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+/* TABLET: 2 cards per row (768px and up) */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 18px;
+    padding: 0 8px;
+  }
+
+  .app {
+    padding: 16px;
+  }
+
+  .sci-header {
+    padding: 14px 10px;
+    margin-bottom: 18px;
+  }
+
+  .sci-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .sci-header p {
+    font-size: 0.9375rem;
+  }
+}
+
+/* DESKTOP: 3 cards per row (1024px and up) */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 18px;
+    padding: 0;
+  }
+
+  .app {
+    padding: 18px;
+  }
+
+  .sci-header {
+    padding: 10px 0;
+  }
+
+  .sci-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .sci-header p {
+    font-size: 1rem;
+  }
+}
+
+/* ==================== CARD STYLES ==================== */
+.card {
+  background: linear-gradient(180deg, rgba(9, 18, 32, 0.9), rgba(5, 10, 18, 0.6));
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 8px 30px rgba(30, 130, 255, 0.08);
+  border: 1px solid rgba(30, 130, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(30, 130, 255, 0.12);
+}
+
+.card h4 {
+  font-size: 1rem;
+  margin: 0 0 4px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.card h3 {
+  font-size: 1.125rem;
+  margin: 0 0 4px 0;
+}
+
+.card p {
+  font-size: 0.875rem;
+  margin: 2px 0;
+  word-break: break-word;
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  margin: 4px 0;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* TABLET CARD SIZING */
+@media (min-width: 768px) {
+  .card {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .card h4 {
+    font-size: 1.0625rem;
+  }
+
+  .card h3 {
+    font-size: 1.1875rem;
+  }
+
+  .card p {
+    font-size: 0.9375rem;
+  }
+
+  .card h2 {
+    font-size: 1.375rem;
+  }
+}
+
+/* DESKTOP CARD SIZING */
+@media (min-width: 1024px) {
+  .card {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .card h4 {
+    font-size: 1.125rem;
+  }
+
+  .card h3 {
+    font-size: 1.25rem;
+  }
+
+  .card p {
+    font-size: 1rem;
+  }
+
+  .card h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ==================== BUTTONS ==================== */
+button {
+  background: linear-gradient(90deg, #5df0ff, #6a66ff);
+  color: #041028;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  min-height: 36px;
+  width: 100%;
+  max-width: 200px;
+  margin: 4px auto 0;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* TABLET BUTTON SIZING */
+@media (min-width: 768px) {
+  button {
+    padding: 10px 14px;
+    font-size: 0.9375rem;
+  }
+}
+
+/* DESKTOP BUTTON SIZING */
+@media (min-width: 1024px) {
+  button {
+    padding: 8px 12px;
+    font-size: 1rem;
+  }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.sci {
+  border-left: 4px solid rgba(90, 200, 255, 0.6);
+}
+
+img {
+  border-radius: 8px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+pre {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px;
+  border-radius: 8px;
+  color: #d7f7ff;
+  overflow-x: auto;
+  max-width: 100%;
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  pre {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  pre {
+    font-size: 0.875rem;
+  }
+}
+
+/* ==================== RESPONSIVE UTILITIES ==================== */
+.mobile-only {
+  display: block;
+}
+
+.tablet-only {
+  display: none;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+
+  .tablet-only {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tablet-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+}

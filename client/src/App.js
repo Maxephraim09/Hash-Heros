@@ -67,8 +67,8 @@ function App(){
       <div className="app sci-bg">
         <header className="sci-header">
           <h1>Hashing Heros — Dynamic NFT Network</h1>
-          <p>Account: {account}</p>
-          <p style={{ fontSize: '12px', marginTop: '5px' }}>
+          <p style={{ wordBreak: 'break-all' }}>Account: {account}</p>
+          <p style={{ marginTop: '5px', wordBreak: 'break-all' }}>
             Status: {isOnline ? '🟢 Online' : '🔴 Offline'}
           </p>
         </header>
