@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { initWeb3, loadContracts } from './services/web3Service';
 import { GameProvider } from './context/GameState';
+import Preloader from './components/Preloader';
 import TapToEarn from './components/TapToEarn';
 import NFT_Evolution from './components/NFT_Evolution';
 import ReputationBadge from './components/ReputationBadge';
@@ -13,6 +14,7 @@ import './styles.css';
 function App(){
   const [account, setAccount] = useState(null);
   const [contracts, setContracts] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -24,9 +26,15 @@ function App(){
         setContracts(cs);
       } catch(e) {
         console.warn('Web3 init failed', e);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
+
+  if (isLoading) {
+    return <Preloader />;
+  }
 
   return (
     <GameProvider>
