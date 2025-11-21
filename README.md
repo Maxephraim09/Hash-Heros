@@ -237,9 +237,8 @@ If you want to see the project running **immediately** without understanding all
    truffle migrate --reset --network development
    ```
 
-4. **In a new terminal, start the backend services**
+4. **In a new terminal, start the BlockDAG simulator**
    ```bash
-   # Start BlockDAG simulator
    cd blockdag-sim
    npm install
    npm start
@@ -258,7 +257,6 @@ If you want to see the project running **immediately** without understanding all
    ```bash
    cd client
    npm install
-   cp ../build/contracts/*.json src/contracts/
    npm start
    ```
    App opens at `http://localhost:3000`
@@ -267,6 +265,12 @@ If you want to see the project running **immediately** without understanding all
    - Add Ganache network (RPC: `http://127.0.0.1:7545`, Chain ID: `5777`)
    - Import a Ganache test account (private key from Ganache)
    - You're ready to play!
+
+**🚨 Important**: If you see "Network Error" in the browser, make sure all 4 services are running:
+- ✅ Ganache on port 7545
+- ✅ BlockDAG Simulator on port 4001
+- ✅ Mock API on port 4002
+- ✅ React App on port 3000
 
 ### What to Do First
 
@@ -338,7 +342,16 @@ npm start
 # Runs on http://localhost:4002
 ```
 
-#### 5. Deploy React Frontend
+#### 5. Start Mock API
+```bash
+cd mock-api
+npm install
+npm start
+# Runs on http://localhost:4002
+```
+Keep this running in a separate terminal window.
+
+#### 6. Deploy React Frontend
 ```bash
 cd client
 npm install
@@ -350,6 +363,14 @@ cp ../build/contracts/*.json src/contracts/
 npm start
 # Opens on http://localhost:3000
 ```
+
+**Important**: Make sure **ALL THREE servers are running** before accessing the React app:
+- Ganache (http://localhost:7545)
+- BlockDAG Simulator (http://localhost:4001)
+- Mock API (http://localhost:4002)
+- React App (http://localhost:3000)
+
+If you see a "Network Error" in the browser, it means one of the backend servers is not running.
 
 #### 6. Connect MetaMask
 1. Add Ganache network to MetaMask:
@@ -541,6 +562,70 @@ This project is licensed under the **MIT License** — see `LICENSE` file for de
 
 ---
 
+## 🛠️ Troubleshooting
+
+### Network Error / Axios Error
+**Symptoms**: `AxiosError: Network Error` in browser console
+**Cause**: One or more backend servers are not running
+**Solution**: Verify all 4 services are running in separate terminals:
+```bash
+# Terminal 1: Ganache
+ganache-cli -p 7545
+
+# Terminal 2: BlockDAG Simulator
+cd blockdag-sim && npm start
+
+# Terminal 3: Mock API
+cd mock-api && npm start
+
+# Terminal 4: React App
+cd client && npm start
+```
+
+### Web3 Initialization Failed
+**Symptoms**: "Web3 init failed" in console, MetaMask not detected
+**Cause**: MetaMask not installed or Ganache network not added to MetaMask
+**Solution**:
+1. Install MetaMask browser extension
+2. Add Ganache network to MetaMask:
+   - Network Name: Ganache
+   - RPC URL: `http://127.0.0.1:7545`
+   - Chain ID: `5777`
+   - Currency: ETH
+3. Switch wallet to Ganache network
+4. Import a test account from Ganache (copy private key)
+5. Refresh the browser
+
+### Contracts Not Loaded
+**Symptoms**: "Contracts not loaded" message in Admin Panel
+**Cause**: Contract ABIs not copied to client directory, or migration failed
+**Solution**:
+```bash
+# Ensure migration was successful
+truffle migrate --reset --network development
+
+# Copy contract ABIs to client
+cp build/contracts/*.json client/src/contracts/
+
+# Restart React app
+cd client && npm start
+```
+
+### Port Already in Use
+**Symptoms**: `Error: listen EADDRINUSE :::3000` or similar
+**Cause**: Another service is already using the port
+**Solution**: Kill the process using the port:
+```bash
+# Windows (PowerShell)
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+
+# Or use a different port
+cd client && PORT=3001 npm start
+```
+
+---
+
 ## 💡 FAQ
 
 **Q: Can I deploy this to mainnet?**
@@ -557,6 +642,9 @@ A: No. Demo mode bypasses owner checks. Disable for mainnet: `setDemoMode(false)
 
 **Q: How do I scale to millions of users?**
 A: See "Scalability Roadmap" section above. Start with Layer 2 + distributed backend.
+
+**Q: What if the React app crashes with a Network Error?**
+A: This means the mock API (port 4002) or BlockDAG simulator (port 4001) is not running. See Troubleshooting section above.
 
 ---
 
