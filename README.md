@@ -360,11 +360,22 @@ npm start
 2. Import Ganache test account (copy private key from Ganache)
 3. Ensure wallet is connected to Ganache network
 
-#### 7. Enable Demo Mode (Optional)
-Create `.env` in `client/` directory:
-```
+#### 7. Configure Environment Variables (Important)
+Create `.env` file in the `client/` directory with the following contents:
+```bash
+DISABLE_ESLINT_PLUGIN=true
+GENERATE_SOURCEMAP=false
 REACT_APP_DEMO_MODE=true
 ```
+
+**What each variable does:**
+- `DISABLE_ESLINT_PLUGIN=true` - Disables ESLint plugin warnings during build
+- `GENERATE_SOURCEMAP=false` - Prevents source map generation, which eliminates "Failed to parse source map" warnings from web3 library dependencies
+- `REACT_APP_DEMO_MODE=true` - Enables demo mode for easy testing without account switching
+
+**Important:** Add `.env` to your `.gitignore` file to avoid committing sensitive data. The `.gitignore` file in the `client/` directory already includes this entry.
+
+**Why this matters:** Without these environment variables, you may see compilation errors and numerous webpack warnings related to source maps from the web3 library. These settings resolve those issues and provide a cleaner build output.
 
 ---
 
