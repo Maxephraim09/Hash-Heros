@@ -9,7 +9,7 @@ contract UtilityTicketNFT is ERC721, Ownable {
 // ---- Demo mode helper (for Wave-2 demos) ----
 bool public demoMode = true;
 
-modifier onlyOwnerOrDemoOrDemo() {
+modifier onlyOwnerOrDemo() {
     if (!demoMode) {
         require(owner() == msg.sender, "Not owner");
     }
@@ -27,7 +27,7 @@ function setDemoMode(bool v) external onlyOwnerOrDemo {
 
     event TicketIssued(uint256 indexed id, address indexed to, uint256 validUntil);
 
-    constructor() ERC721("HashingHerosTicket","HHT") {}
+    constructor() ERC721("HashingHerosTicket","HHT") Ownable(msg.sender) {}
 
     function issueTicket(address to, uint256 daysValid, string calldata meta) external onlyOwnerOrDemo returns (uint256) {
         nextId++;

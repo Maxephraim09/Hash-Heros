@@ -9,7 +9,7 @@ contract ReputationNFT is ERC721, Ownable {
 // ---- Demo mode helper (for Wave-2 demos) ----
 bool public demoMode = true;
 
-modifier onlyOwnerOrDemoOrDemo() {
+modifier onlyOwnerOrDemo() {
     if (!demoMode) {
         require(owner() == msg.sender, "Not owner");
     }
@@ -27,7 +27,7 @@ function setDemoMode(bool v) external onlyOwnerOrDemo {
     event ReputationChanged(address indexed user, uint256 newScore);
     event IdentityMinted(uint256 indexed id, address indexed to);
 
-    constructor() ERC721("HashingHerosRep","HHR") {}
+    constructor() ERC721("HashingHerosRep","HHR") Ownable(msg.sender) {}
 
     function mintIdentity(address to) external onlyOwnerOrDemo returns (uint256) {
         nextId++;

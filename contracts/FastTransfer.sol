@@ -4,11 +4,12 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract FastTransfer is Ownable {
+    constructor() Ownable(msg.sender) {}
 
 // ---- Demo mode helper (for Wave-2 demos) ----
 bool public demoMode = true;
 
-modifier onlyOwnerOrDemoOrDemo() {
+modifier onlyOwnerOrDemo() {
     if (!demoMode) {
         require(owner() == msg.sender, "Not owner");
     }

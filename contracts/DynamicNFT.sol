@@ -9,7 +9,7 @@ contract DynamicNFT is ERC721, Ownable {
 // ---- Demo mode helper (for Wave-2 demos) ----
 bool public demoMode = true;
 
-modifier onlyOwnerOrDemoOrDemo() {
+modifier onlyOwnerOrDemo() {
     if (!demoMode) {
         require(owner() == msg.sender, "Not owner");
     }
@@ -28,7 +28,7 @@ function setDemoMode(bool v) external onlyOwnerOrDemo {
     event Minted(uint256 indexed tokenId, address indexed owner);
     event MetadataUpdated(uint256 indexed tokenId, uint256 xp, uint256 level, string traits);
 
-    constructor() ERC721("HashingHerosDynamic","HHD") {}
+    constructor() ERC721("HashingHerosDynamic","HHD") Ownable(msg.sender) {}
 
     function mint(address to) external onlyOwnerOrDemo returns (uint256) {
         nextId++;
